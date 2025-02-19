@@ -1,9 +1,16 @@
+
+
+
+// or via CommonJS
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const generateBtn = document.getElementById("generate-btn");
     const passwordField = document.getElementById("password-field");
     const copyBtn = document.getElementById("copy-btn");
     const passwordStrength = document.getElementById("password-strength");
     const toggleVisibility = document.getElementById("toggle-visibility");
+    const downloadBtn = document.getElementById("download_passwd");
 
     function updateStrength(password) {
         let strength = 0;
@@ -19,10 +26,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function saveToFile(password) {
+        if(password.length === 0){
+            Swal.fire({
+                title: 'Error!',
+                text: 'la contraseña no ha sido generada, por lo que no se descargará el fichero',
+                icon: 'error',
+                confirmButtonText: 'Volver'
+              })
+              return;
+        }
+        
         const blob = new Blob([password], { type: "text/plain" });
+        
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "password.txt";
+        // create a new Date object
+    let now = new Date();
+
+    // get the current hour (from 0 to 23)
+    let hour = now.getHours();
+
+    // get the current minute (from 0 to 59)
+    let minute = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    
+        a.download = hour+"-" + minute+"-" + seconds + "-" + "password.txt";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -48,16 +77,20 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             passwordField.value = data.password;
             updateStrength(data.password);
-            saveToFile(data.password);
+            
         })
         .catch(error => console.error("Error al generar la contraseña:", error));
     }
     
     generateBtn.addEventListener("click", generatePassword);
+    downloadBtn.addEventListener("click", function () {
+        saveToFile(passwordField.value);
+    }); 
     
     document.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             generatePassword();
+            
         }
     });
     
