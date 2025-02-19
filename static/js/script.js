@@ -1,9 +1,3 @@
-
-
-
-// or via CommonJS
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const generateBtn = document.getElementById("generate-btn");
     const passwordField = document.getElementById("password-field");
