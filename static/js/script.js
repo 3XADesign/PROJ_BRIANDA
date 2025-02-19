@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const passwordStrength = document.getElementById("password-strength");
     const toggleVisibility = document.getElementById("toggle-visibility");
     const downloadBtn = document.getElementById("download_passwd");
+    const lengthInput = document.getElementById("length");
 
     function updateStrength(password) {
         let strength = 0;
@@ -52,7 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function generatePassword() {
-        const length = document.getElementById("length").value;
+        const length = parseInt(lengthInput.value);
+        if (isNaN(length) || length < 4 || length > 15) {
+            alert("La longitud de la contraseña debe estar entre 4 y 15.");
+            return;
+        }
+        
         const useDigits = document.getElementById("use-digits").checked;
         const useSpecials = document.getElementById("use-specials").checked;
         
@@ -62,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                length: parseInt(length),
+                length: length,
                 use_digits: useDigits,
                 use_specials: useSpecials
             })
@@ -100,5 +106,11 @@ document.addEventListener("DOMContentLoaded", function () {
             passwordField.type = "password";
             toggleVisibility.textContent = "👁";
         }
+    });
+    
+    lengthInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, ''); // Permite solo números
+        if (this.value > 15) this.value = 15;
+        if (this.value < 4 && this.value !== "") this.value = 4;
     });
 });
